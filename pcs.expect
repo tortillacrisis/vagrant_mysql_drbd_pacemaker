@@ -1,0 +1,16 @@
+#!/usr/bin/expect
+
+set node1 [lindex $argv 0]
+set node2 [lindex $argv 1]
+set username [lindex $argv 2]
+set password [lindex $argv 3]
+
+spawn pcs cluster auth $node1 $node2
+
+expect "Username:"
+send "$username\r";
+
+expect "Password:"
+send "$password\r";
+
+interact

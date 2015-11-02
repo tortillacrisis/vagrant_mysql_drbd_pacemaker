@@ -11,4 +11,4 @@ sudo rm /etc/lvm/cache/.cache
 sudo touch /etc/lvm/cache/.cache
 
 echo "Restarting Ram Disk"
-sudo update-initramfs -u
+#sudo update-initramfs -u
