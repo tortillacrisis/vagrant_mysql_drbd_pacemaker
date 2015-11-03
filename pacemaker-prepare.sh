@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # 
+set -x
 
 _sync_dir=/home/vagrant/sync
 source ${_sync_dir}/config.sh
@@ -38,11 +39,18 @@ echo "${hacluster_u}:${hacluster_p}" | sudo chpasswd
 exit
 EOF
 
-	echo "Configure the cluster"
-	/usr/bin/expect ${sync_dir}/pcs.expect ${node1_ip} ${node2_ip} ${hacluster_u} ${passy}
+	echo "Configure the cluster on ${node2_name}"
+	/usr/bin/expect ${sync_dir}/pcs.expect ${node1_ip} ${node2_ip} ${hacluster_u} ${hacluster_p}
 
+	sshpass -p "vagrant" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -t -t vagrant@sandbar1 <<EOF
+echo "Configure the cluster on sandbar1"
+/usr/bin/expect /home/vagrant/sync/pcs.expect  10.1.2.45 10.1.2.44 hacluster passy
+exit
+EOF
+
+#/usr/bin/expect ${sync_dir}/pcs.expect ${node2_ip} ${node1_ip} ${hacluster_u} ${hacluster_p}
 	# Create the cluster grouping 
-	sudo pcs cluster setup --name ${cluster_name} ${node1_name} ${node2_name}
+	sudo pcs cluster setup --force --name ${cluster_name} ${node1_name} ${node2_name}
 fi
 
 # if [[ $node = "grizzly2" ]]; then
